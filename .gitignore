@@ -1,0 +1,14 @@
+node_modules
+.envnode_modules/
+dist/
+.env
+.DS_Store
+*.log
+.npm/
+.yarn/
+.idea/
+.vscode/
+coverage/
+*.tsbuildinfo
+uploads/
+temp/

@@ -1,0 +1,59 @@
+[
+    {
+      "name": "Bohemian Rhapsody",
+      "album": 1975,
+      "cover": "https://example.com/bohemian_rhapsody.jpg",
+      "artist": {
+        "name": "Queen",
+        "nationality": "UK"
+      },
+      "duration": {
+        "start": 0,
+        "end": 355
+      },
+      "mediaId": "60d5f9b2f4d3c20017a1a5b1"
+    },
+    {
+      "name": "Billie Jean",
+      "album": 1982,
+      "cover": "https://example.com/billie_jean.jpg",
+      "artist": {
+        "name": "Michael Jackson",
+        "nationality": "USA"
+      },
+      "duration": {
+        "start": 0,
+        "end": 294
+      },
+      "mediaId": "60d5f9b2f4d3c20017a1a5b2"
+    },
+    {
+      "name": "Hotel California",
+      "album": 1976,
+      "cover": "https://example.com/hotel_california.jpg",
+      "artist": {
+        "name": "Eagles",
+        "nationality": "USA"
+      },
+      "duration": {
+        "start": 0,
+        "end": 390
+      },
+      "mediaId": "60d5f9b2f4d3c20017a1a5b3"
+    },
+    {
+      "name": "Smells Like Teen Spirit",
+      "album": 1991,
+      "cover": "https://example.com/smells_like_teen_spirit.jpg",
+      "artist": {
+        "name": "Nirvana",
+        "nationality": "USA"
+      },
+      "duration": {
+        "start": 0,
+        "end": 301
+      },
+      "mediaId": "60d5f9b2f4d3c20017a1a5b4"
+    }
+  ]
+  

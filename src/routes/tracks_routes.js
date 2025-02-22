@@ -6,7 +6,7 @@ router.get('/', getItems)
 router.post('/', createItem)
 router.get('/:id', getItem)
 router.put('/:id', updateItem)
-router.put('/:id', deleteItem)
+router.delete('/:id', deleteItem)
 
 
 

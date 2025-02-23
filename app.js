@@ -2,6 +2,7 @@ const express = require('express');
 const cors = require('cors');
 const dbConnect = require ('./src/config/mongo')
 const app = express();
+const path = require ('path')
 require('dotenv').config();
 
 
@@ -12,6 +13,7 @@ app.use(cors());
 
 app.use("/", require("./src/routes"))
 
+app.use('/public', express.static(path.join(__dirname, 'src/storage')));
 
 app.listen(port, () => {
     console.log(`Server is running on port ${port}`);

@@ -5,7 +5,7 @@ const fs = require('fs').promises;
 async function readRoutes() {
     try {
         const files = await fs.readdir(__dirname);
-        console.log({files});
+
         files.forEach((file) =>{
             const routeComplete = file.split('.').shift();
             const route = routeComplete.split('_').shift()

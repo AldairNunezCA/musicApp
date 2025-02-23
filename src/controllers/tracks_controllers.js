@@ -27,8 +27,8 @@ const createItem = async (req, res) => {
 
 const getItem = async (req, res) => {
   try {
-    const { id } = req.params;
-    const result = await getItemByIdService(id);
+    const { _id } = req.params;
+    const result = await getItemByIdService(_id);
     res.status(200).json(result);
   } catch (error) {
     res.status(500).send({ error: error.message });
@@ -37,9 +37,9 @@ const getItem = async (req, res) => {
 
 const updateItem = async (req, res) => {
   try {
-    const { id } = req.params;
+    const { _id } = req.params;
     const data = req.body;
-    const result = await updateItemService(id, data);
+    const result = await updateItemService(_id, data);
     res.status(200).json(result);
   } catch (error) {
     res.status(500).send({ error: error.message });
@@ -48,9 +48,9 @@ const updateItem = async (req, res) => {
 
 const deleteItem = async (req, res) => {
     try{
-        const { id } = req.params;
-        const result = await deleteItemService(id);
-        res.status(200).json(`Item with ID ${id} has been deleted`);
+        const { _id } = req.params;
+        const result = await deleteItemService(_id);
+        res.status(200).json(`Item with ID ${_id} has been deleted`);
     } catch (error){
         res.status(500).send({error: error.message})
     }

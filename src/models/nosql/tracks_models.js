@@ -6,7 +6,7 @@ const TrackScheme = new mongoose.Schema(
             type: String
         },
         album:{
-            type: Number
+            type: String
         },
         cover:{
             type: String,
@@ -27,14 +27,15 @@ const TrackScheme = new mongoose.Schema(
         },
         duration:{
             start:{
-                type: Number
+                type: Number,
+                default: 0
             },
             end: {
                 type: Number
             }
         },
         mediaId: {
-            type: String
+            type: mongoose.SchemaTypes.ObjectId
         }
     },
     {

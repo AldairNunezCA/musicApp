@@ -29,7 +29,7 @@ const createItemService = async (itemData) => {
 
 const getItemByIdService = async (id) => {
   try {
-    foundId = await tracksModel.findOne({ mediaId: id });
+    foundId = await tracksModel.findOne({ _id: id });
     if (!foundId) {
       throw new Error(`ID ${id} not found`);
     } else {
@@ -42,7 +42,7 @@ const getItemByIdService = async (id) => {
 
 const updateItemService = async (id, data) => {
   try {
-    const foundId = await tracksModel.findOne({ mediaId: id });
+    const foundId = await tracksModel.findOne({ _id: id });
     if (!foundId) {
       throw new Error(`ID ${id} not found`);
     }
@@ -65,7 +65,7 @@ const updateItemService = async (id, data) => {
     }
 
     const updatedTrack = await tracksModel.findOneAndUpdate(
-      { mediaId: id },
+      { _id: id },
       data,
       { new: true }
     );
@@ -77,11 +77,11 @@ const updateItemService = async (id, data) => {
 
 const deleteItemService = async (id) => {
     try {
-        const foundId = await tracksModel.findOne({ mediaId: id });
+        const foundId = await tracksModel.findOne({ _id: id });
         if (!foundId) {
           throw new Error(`ID ${id} not found`);
         }
-        return  await tracksModel.deleteOne({ mediaId: id});
+        return  await tracksModel.deleteOne({ _id: id});
     } catch (error){
         throw error;
     }

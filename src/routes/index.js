@@ -11,7 +11,7 @@ async function readRoutes() {
             const route = routeComplete.split('_').shift()
             if (route !== 'index') {
                 console.log(`loading route ${route}`)
-                router.use(`/${route}`, require(`./${file}`))
+                router.use(`/api/v1/${route}`, require(`./${file}`))
             }
         })
     } catch (error) {

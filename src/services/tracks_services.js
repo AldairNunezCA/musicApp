@@ -81,7 +81,7 @@ const deleteItemService = async (id) => {
         if (!foundId) {
           throw new Error(`ID ${id} not found`);
         }
-        return  await tracksModel.deleteOne({ _id: id});
+        return  await tracksModel.delete({ _id: id});
     } catch (error){
         throw error;
     }

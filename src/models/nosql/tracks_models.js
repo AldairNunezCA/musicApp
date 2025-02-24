@@ -1,4 +1,5 @@
-const mongoose = require('mongoose')
+const mongoose = require('mongoose');
+const MongooseDelete = require('mongoose-delete');
 
 const TrackScheme = new mongoose.Schema(
     {
@@ -9,13 +10,7 @@ const TrackScheme = new mongoose.Schema(
             type: String
         },
         cover:{
-            type: String,
-            validate: {
-                validator: (req)=> {
-                    return true;
-                }, 
-                message: "URL ERROR"
-            }
+            type: String
         },
         artist:{
             name: {
@@ -43,5 +38,5 @@ const TrackScheme = new mongoose.Schema(
         versionKey: false
     }
 );
-
+TrackScheme.plugin(MongooseDelete, {overrideMethods: "all"})
 module.exports = mongoose.model("tracks", TrackScheme);

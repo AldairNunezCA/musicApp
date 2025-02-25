@@ -10,16 +10,6 @@ const getItemsService = async () => {
 };
 
 const createItemService = async (itemData) => {
-  if (
-    !itemData.name ||
-    !itemData.album ||
-    !itemData.cover ||
-    !itemData.artist ||
-    !itemData.duration ||
-    !itemData.mediaId
-  ) {
-    throw new Error("Missing all the information");
-  }
   try {
     return await tracksModel.create(itemData);
   } catch (error) {

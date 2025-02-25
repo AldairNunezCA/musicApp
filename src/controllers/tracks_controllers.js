@@ -1,3 +1,4 @@
+const { matchedData } = require("express-validator");
 const {
   getItemsService,
   createItemService,
@@ -17,7 +18,7 @@ const getItems = async (req, res) => {
 
 const createItem = async (req, res) => {
   try {
-    const data = req.body;
+    const data = matchedData(req)
     const result = await createItemService(data);
     res.status(201).json(result);
   } catch (error) {

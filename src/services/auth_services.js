@@ -21,7 +21,6 @@ const loginUserService = async (data) => {
         if(!user) {
             throw new Error('Invalid credentials')
         } 
-        console.log(user)
         const hashPassword = user.password;
         const check = await compare(data.password, hashPassword)
         if (!check){
@@ -29,7 +28,7 @@ const loginUserService = async (data) => {
         } else{
             const { password, ...userWithoutPassword} = user.toObject();
             const tokenUser = {
-                token: tokenSign(user),
+                token: await tokenSign(user),
                 user: userWithoutPassword
             }
             return tokenUser;    

@@ -7,7 +7,7 @@ const registerUserService = async (data) =>{
         const passwordHashed = await encrypt(data.password);
         const body = {...data, password: passwordHashed}
         const newUser = await usersModel.create(body);
-        const { password, ...userWithoutPassword } = newUser.toObject();
+        const { password, ...userWithoutPassword } = newUser.toJSON();
         const tokenUser = { token: await tokenSign(newUser), user: userWithoutPassword }        
         return tokenUser
     } catch (error) {
@@ -17,7 +17,7 @@ const registerUserService = async (data) =>{
 
 const loginUserService = async (data) => {
     try{
-        const user = await usersModel.findOne({ email: data.email}).select('password name role email')
+        const user = await usersModel.findOne({ email: data.email})
         if(!user) {
             throw new Error('Invalid credentials')
         } 
@@ -26,7 +26,7 @@ const loginUserService = async (data) => {
         if (!check){
             throw new Error ('Invalid credentials')
         } else{
-            const { password, ...userWithoutPassword} = user.toObject();
+            const { password, ...userWithoutPassword} = user.toJSON();
             const tokenUser = {
                 token: await tokenSign(user),
                 user: userWithoutPassword

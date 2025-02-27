@@ -1,4 +1,38 @@
-const { sequelieze }= require('../../config/mysql')
+const { sequelize }= require('../../config/mysql')
 const { DataTypes } = require('sequelize');
 
-const User = sequilize.define()
+const Track = sequelize.define("tracks",
+    {
+        name: {
+            type: DataTypes.STRING,
+            allowNull: false,
+        },
+        album: {
+            type: DataTypes.STRING,
+            allowNull: false
+        },
+        cover: {
+            type: DataTypes.STRING,
+            allowNull: false
+        },
+        artist_name: {
+            type: DataTypes.STRING
+        },
+        artist_nationality: {
+            type:DataTypes.STRING
+        },
+        duration_start: {
+            type: DataTypes.INTEGER,
+            defaultValue: 0
+        },
+        duration_end: {
+            type: DataTypes.INTEGER
+        },
+        mediaId: {
+            type: DataTypes.STRING
+        }
+    }, {
+        timestamps: true,
+    }
+)
+module.exports = Track;

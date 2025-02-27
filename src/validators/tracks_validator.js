@@ -34,10 +34,4 @@ const createItemValidator = [
         .notEmpty().withMessage('Media ID is required'),
 ];
 
-const getItemValidator = [
-    check('_id')
-        .isMongoId().withMessage('ID format is incorrect')
-        .notEmpty().withMessage('ID is required'),
-];
-
-module.exports = { createItemValidator, getItemValidator };
+module.exports = { createItemValidator };

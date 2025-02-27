@@ -3,13 +3,17 @@ const fs = require('fs')
 const publicUrl = process.env.PUBLIC_URL;
 
 const getItemsService = async () => {
-    try {
-      return await storageModel.find({});
-    } catch (error) {
-      throw new Error("No items found");
-      Ï;
-    }
-  };
+  try {
+    console.log("SM storageModel", storageModel)
+      const items = await storageModel.findAll();
+      if (!items || items.length === 0) {
+          return []; // Devuelve un array vacío en lugar de lanzar un error
+      }
+      return items;
+  } catch (error) {
+      throw new Error("Database query failed");
+  }
+};
 
 const uploadItemService = async(myFile) => {
     if (!myFile || !myFile.filename) {

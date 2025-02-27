@@ -1,4 +1,4 @@
-const { Sequelize } = require("sequelize")
+const { Sequelize } = require("sequelize");
 
 const db = process.env.MYSQL_DATABASE;
 const user = process.env.MYSQL_USER;
@@ -8,17 +8,20 @@ const hostSQL = process.env.MYSQL_HOST;
 
 const sequelize = new Sequelize(db,user,pass,{
     host: hostSQL,
-    dialect: 'mysql'
+    dialect: 'mysql',
+    logging: false
 }
 )
 
 const dbConnectSQL = async() => {
     try{
-        console.log(user)
         await sequelize.authenticate();
-        console.log('MySQL connection succesfull')
+        await sequelize.sync({ alter: true})
+        console.log('tablas creadas')
+        console.log('✅ MySQL connection successful')
     } catch (error) {
-        console.log('MySQL connectione error', error)
+        console.log('❌ MySQL connectione error', error);
+        process.exit(1);
     }
 };
 

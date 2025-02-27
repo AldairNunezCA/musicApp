@@ -9,12 +9,12 @@ const verifyRol = (rol) => (req, res, next) => {
         const checkValueRol = rol.some((rolSingle) => rolesByUser.includes(rolSingle));
 
         if (!checkValueRol) {
-            return res.status(403).json({ error: "Access denied" });
+            return res.status(401).json({ error: "Access denied" });
         }
 
         next();
     } catch (error) {
-        return res.status(500).json({ error: "Internal server error" });
+        return res.status(500).json({ error: "Intexxxrnal server error" });
     }
 };
 

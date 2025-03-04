@@ -7,7 +7,7 @@ const verifyRol = require('../middlewares/rol_middleware');
 const router = express.Router();
 
 router.get('/', authMiddleware,verifyRol(["user","admin"]), getItems)
-router.post('/',authMiddleware, verifyRol(["user"]) ,createItemValidator, handleValidationErrors, createItem)
+router.post('/', authMiddleware, verifyRol(["user"]), createItemValidator, handleValidationErrors, createItem)
 router.get('/:_id', authMiddleware, verifyRol(["user", "admin"]), handleValidationErrors, getItem)
 router.put('/:_id', authMiddleware, verifyRol(["user"]), handleValidationErrors, updateItem)
 router.delete('/:_id', authMiddleware, verifyRol(["user"]), handleValidationErrors, deleteItem)

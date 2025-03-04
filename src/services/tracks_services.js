@@ -1,17 +1,39 @@
 const { tracksModel } = require("../models");
+const ENGINE_DB = process.env.ENGINE_DB;
 
 const getItemsService = async () => {
   try {
-    return await tracksModel.find({});
+    let items;
+    if (ENGINE_DB === 'nosql') {
+      items = await tracksModel.find({});
+    } else {
+      items = await tracksModel.findAll();
+    }
+
+    if (!items || items.length === 0) {
+      throw new Error("No items found");
+    }
+    return items;
   } catch (error) {
-    throw new Error("No items found");
-    Ï;
+    throw error;
   }
 };
 
 const createItemService = async (itemData) => {
   try {
-    return await tracksModel.create(itemData);
+    if (ENGINE_DB === 'nosql') {
+      return await tracksModel.create(itemData);
+    } else {
+      const {artist, duration, ...restOfData} = itemData;
+      const itemDataFlat = {
+        ...restOfData,
+        artist_name: artist.name,
+        artist_nationality: artist.nationality,
+        duration_start: duration.start,
+        duration_end: duration.end
+      };
+      return await tracksModel.create(itemDataFlat);
+    }
   } catch (error) {
     throw error;
   }
@@ -19,7 +41,13 @@ const createItemService = async (itemData) => {
 
 const getItemByIdService = async (id) => {
   try {
-    foundId = await tracksModel.findOne({ _id: id });
+    let foundId;
+    if (ENGINE_DB === 'nosql') {
+      foundId = await tracksModel.findOne({ _id: id });
+    } else {
+      foundId = await tracksModel.findOne({ where: { id } });
+    }
+
     if (!foundId) {
       throw new Error(`ID ${id} not found`);
     } else {
@@ -66,16 +94,30 @@ const updateItemService = async (id, data) => {
 };
 
 const deleteItemService = async (id) => {
-    try {
-        const foundId = await tracksModel.findOne({ _id: id });
-        if (!foundId) {
+  try {
+      let foundId;
+      if (ENGINE_DB === 'nosql') {
+          foundId = await tracksModel.findOne({ _id: id });
+      } else {
+          foundId = await tracksModel.findOne({ where: { id } });
+      }
+
+      if (!foundId) {
           throw new Error(`ID ${id} not found`);
-        }
-        return  await tracksModel.delete({ _id: id});
-    } catch (error){
-        throw error;
-    }
-}
+      }
+
+      let deleteResult;
+      if (ENGINE_DB === 'nosql') {
+          deleteResult = await tracksModel.delete({ _id: id});
+      } else {
+          deleteResult = await tracksModel.destroy({ where: { id } });
+      }
+
+      return deleteResult;
+  } catch (error) {
+      throw error;
+  }
+};
 
 module.exports = {
   getItemsService,

@@ -16,7 +16,7 @@ const sequelize = new Sequelize(db,user,pass,{
 const dbConnectSQL = async() => {
     try{
         await sequelize.authenticate();
-        await sequelize.sync({ alter: true})
+        await sequelize.sync({ force: true})
         console.log('tablas creadas')
         console.log('✅ MySQL connection successful')
     } catch (error) {

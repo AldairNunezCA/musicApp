@@ -1,7 +1,7 @@
 const { verifyToken } = require("../utils/handleJwt");
 const models = require('../models')
 const getProperties = require('../utils/handleEngineProperty');
-const { where } = require("sequelize");
+const { ObjectId } = require('mongodb')
 
 const propertiesKey = getProperties();
 
@@ -18,18 +18,18 @@ const authMiddleware = async (req, res, next) => {
         }
 
         const query = {
-            [propertiesKey.id]: dataToken[propertiesKey.id]
+            [propertiesKey.id]: propertiesKey.id === '_id' 
+                ? new ObjectId(dataToken[propertiesKey.id])  
+                : dataToken[propertiesKey.id]  
         };
 
-        console.log("este es el query ", query);
+        console.log("Este es el query:", query);
 
 
-        const user = (propertiesKey === 'nosql')
+        const user = propertiesKey.id === '_id'
             ? await models.usersModel.findOne(query)
-            : await models.usersModel.findOne({where: query})
-        if (!user) {
-            return res.status(404).json({ error: "User not found" });
-        }
+            : await models.usersModel.findOne({ where: query });
+
 
         req.user = user;
         next();

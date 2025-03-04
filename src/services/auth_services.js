@@ -1,41 +1,71 @@
 const { usersModel } = require("../models");
 const { encrypt, compare } = require("../utils/handlePassword")
 const { tokenSign } = require('../utils/handleJwt')
+const ENGINE_DB = process.env.ENGINE_DB
 
-const registerUserService = async (data) =>{
-    try{
+const registerUserService = async (data) => {
+    try {
+        let existingEmail;
+        if (ENGINE_DB === 'nosql') {
+            existingEmail = await usersModel.findOne({ email: data.email });
+        } else {
+            existingEmail = await usersModel.findOne({ where: { email: data.email } });
+        }
+
+        if (existingEmail) {
+            throw new Error('Email already exists');
+        }
+
         const passwordHashed = await encrypt(data.password);
-        const body = {...data, password: passwordHashed}
-        const newUser = await usersModel.create(body);
-        const { password, ...userWithoutPassword } = newUser.toJSON();
-        const tokenUser = { token: await tokenSign(newUser), user: userWithoutPassword }        
+        const body = { ...data, password: passwordHashed };
+
+        let newUser;
+        if (ENGINE_DB === 'nosql') {
+            newUser = await usersModel.create(body);
+            newUser = newUser.toJSON();
+        } else {
+            newUser = await usersModel.create(body);
+            newUser = newUser.get({ plain: true}); 
+        }
+
+        const { password, ...userWithoutPassword } = newUser;
+        const tokenUser = { token: await tokenSign(newUser), user: userWithoutPassword };
         return tokenUser
+
     } catch (error) {
         throw error;
     }
 };
 
 const loginUserService = async (data) => {
-    try{
-        const user = await usersModel.findOne({ email: data.email})
-        if(!user) {
-            throw new Error('Invalid credentials')
-        } 
-        const hashPassword = user.password;
-        const check = await compare(data.password, hashPassword)
-        if (!check){
-            throw new Error ('Invalid credentials')
-        } else{
-            const { password, ...userWithoutPassword} = user.toJSON();
-            const tokenUser = {
-                token: await tokenSign(user),
-                user: userWithoutPassword
-            }
-            return tokenUser;    
+    try {
+        let user;
+        if (ENGINE_DB === 'nosql') {
+            user = await usersModel.findOne({ email: data.email }).select("+password");
+            if (user) user = user.toJSON();
+        } else {
+            user = await usersModel.findOne({ where: { email: data.email } });
+            if (user) user = user.get({ plain: true });
         }
-    } catch (error){
+
+        if (!user) {
+            throw new Error('Invalid credentials');
+        }
+        console.log(user)
+        const check = await compare(data.password, user.password);
+        if (!check) {
+            throw new Error('Invalid credentials');
+        }
+
+        const { password, ...userWithoutPassword } = user;
+        const tokenUser = {
+            token: await tokenSign(user),
+            user: userWithoutPassword
+        }
+        return tokenUser;
+    } catch (error) {
         throw error;
     }
-}
+};
 
 module.exports = { registerUserService, loginUserService }

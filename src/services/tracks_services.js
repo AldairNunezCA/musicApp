@@ -60,21 +60,22 @@ const getItemByIdService = async (id) => {
 
 const updateItemService = async (id, data) => {
   try {
-    const foundId = await tracksModel.findOne({ _id: id });
-    if (!foundId) {
+    let foundItem;
+    if (ENGINE_DB === "nosql") {
+      foundItem = await tracksModel.findOne({ _id: id });
+    } else {
+      foundItem = await tracksModel.findOne({ where: { id } });
+    }
+
+    if (!foundItem) {
       throw new Error(`ID ${id} not found`);
     }
-    const allowedFields = [
-      "name",
-      "album",
-      "cover",
-      "artist",
-      "duration",
-      "mediaId",
-    ];
+
+  
+
+    const allowedFields = ["name", "album", "cover", "artist", "duration", "mediaId"];
     const invalidFields = Object.keys(data).filter((key) => {
-      if (key.startsWith("artist.") || key.startsWith("duration."))
-        return false;
+      if (key.startsWith("artist.") || key.startsWith("duration.")) return false;
       return !allowedFields.includes(key);
     });
 
@@ -82,11 +83,23 @@ const updateItemService = async (id, data) => {
       throw new Error(`Invalid fields: ${invalidFields.join(", ")}`);
     }
 
-    const updatedTrack = await tracksModel.findOneAndUpdate(
-      { _id: id },
-      data,
-      { new: true }
-    );
+    if (ENGINE_DB === "mysql") {
+      const convertedData = {};
+      for (const key in data) {
+        const newKey = key.replace(/\./g, "_");
+        convertedData[newKey] = data[key];
+      }
+      data = convertedData;
+    }
+  
+    let updatedTrack;
+    if (ENGINE_DB === "nosql") {
+      updatedTrack = await tracksModel.findOneAndUpdate({ _id: id }, data, { new: true });
+    } else {
+      await foundItem.update(data);
+      updatedTrack = await tracksModel.findOne({ where: { id } });
+    }
+
     return updatedTrack;
   } catch (error) {
     throw error;

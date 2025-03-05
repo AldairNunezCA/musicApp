@@ -9,7 +9,7 @@ const hostSQL = process.env.MYSQL_HOST;
 const sequelize = new Sequelize(db,user,pass,{
     host: hostSQL,
     dialect: 'mysql',
-    logging: false
+    logging: false,
 }
 )
 

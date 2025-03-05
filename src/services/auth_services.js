@@ -51,7 +51,6 @@ const loginUserService = async (data) => {
         if (!user) {
             throw new Error('Invalid credentials');
         }
-        console.log(user)
         const check = await compare(data.password, user.password);
         if (!check) {
             throw new Error('Invalid credentials');

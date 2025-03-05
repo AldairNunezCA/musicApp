@@ -6,9 +6,9 @@ const { authMiddleware } = require('../middlewares/session_middleware');
 const verifyRol = require('../middlewares/rol_middleware');
 const router = express.Router();
 
-router.get("/", authMiddleware, verifyRol(["user"]), getItems);
-router.post("/", authMiddleware, verifyRol(["user"]), storageMiddleware.single('myFile'), uploadItem);
-router.get("/:_id", authMiddleware, verifyRol(["user"]), handleValidationErrors, getItem)
-router.delete("/:_id", authMiddleware, verifyRol(["user"]), handleValidationErrors, deleteItem);
+router.get("/", getItems);
+router.post("/", storageMiddleware.single('myFile'), uploadItem);
+router.get("/:_id", handleValidationErrors, getItem)
+router.delete("/:_id", handleValidationErrors, deleteItem);
 
 module.exports = router 

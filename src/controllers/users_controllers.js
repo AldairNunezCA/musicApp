@@ -1,4 +1,4 @@
-const { getUsersService, modifyUserService } = require("../services/users_services");
+const { getUsersService, modifyUserService, deleteUserService } = require("../services/users_services");
 const ENGINE_DB = process.env.ENGINE_DB;
 
 const getUsers = async (req, res) => {
@@ -32,4 +32,23 @@ const modifyUser = async (req, res) => {
     }
 };
 
-module.exports = { getUsers, modifyUser }
+const deleteUser = async(req, res) => {
+    try{
+        const {_id} = req.params;
+        if (ENGINE_DB === 'nosql') {
+            if ( req.user.role!== 'admin' && req.user._id.toString() !==_id){
+                return res.status(403).send({error: "You don't have permission to modify this user"})
+            }
+        } else {
+            if (req.user.role !== 'admin' && req.user.id.toString() !== _id){
+                return res.status(403).send ({error: "You don't have permission to modify this user"})
+            }
+        }
+        const result = await deleteUserService(_id)
+        res.status(200).json(`User with ID ${_id} has been deleted`)
+    } catch (error) {
+        res.status(500).send({error: error.message})
+    }
+}
+
+module.exports = { getUsers, modifyUser, deleteUser }

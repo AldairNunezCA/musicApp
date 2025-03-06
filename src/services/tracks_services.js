@@ -3,13 +3,7 @@ const ENGINE_DB = process.env.ENGINE_DB;
 
 const getItemsService = async () => {
   try {
-    let items;
-    if (ENGINE_DB === 'nosql') {
-      items = await tracksModel.find({});
-    } else {
-      items = await tracksModel.findAll();
-    }
-
+     const items = await tracksModel.findAllData();
     if (!items || items.length === 0) {
       throw new Error("No items found");
     }
@@ -41,13 +35,7 @@ const createItemService = async (itemData) => {
 
 const getItemByIdService = async (id) => {
   try {
-    let foundId;
-    if (ENGINE_DB === 'nosql') {
-      foundId = await tracksModel.findOne({ _id: id });
-    } else {
-      foundId = await tracksModel.findOne({ where: { id } });
-    }
-
+      const foundId = await tracksModel.findOneData(id);
     if (!foundId) {
       throw new Error(`ID ${id} not found`);
     } else {
@@ -64,7 +52,7 @@ const updateItemService = async (id, data) => {
     if (ENGINE_DB === "nosql") {
       foundItem = await tracksModel.findOne({ _id: id });
     } else {
-      foundItem = await tracksModel.findOne({ where: { id } });
+      foundItem = await tracksModel.findOnData({ where: { id } });
     }
 
     if (!foundItem) {

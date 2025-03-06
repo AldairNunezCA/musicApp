@@ -38,5 +38,43 @@ const TrackScheme = new mongoose.Schema(
         versionKey: false
     }
 );
+
 TrackScheme.plugin(MongooseDelete, {overrideMethods: "all"})
+
+TrackScheme.statics.findAllData = async function () {
+    return await this.aggregate([
+        {
+            $lookup: {
+                from: "storages",
+                localField: "mediaId",
+                foreignField: "_id",
+                as: "audio"
+            }
+        },
+        {
+            $unwind: "$audio"
+        }
+    ]);
+};
+
+TrackScheme.statics.findOneData = async function (id) {
+    return await this.aggregate([
+        {
+            $match: { _id: new mongoose.Types.ObjectId(String(id)) }
+        },
+        {
+            $lookup: {
+                from: "storages",
+                localField: "mediaId",
+                foreignField: "_id",
+                as: "audio"
+            }
+        },
+        {
+            $unwind: "$audio"
+        }
+    ]);
+};
+
+
 module.exports = mongoose.model("tracks", TrackScheme);

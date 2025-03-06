@@ -1,17 +1,23 @@
 const { storageModel } = require("../models");
 const fs = require('fs')
 const publicUrl = process.env.PUBLIC_URL;
+const ENGINE_DB = process.env.ENGINE_DB;
 
 const getItemsService = async () => {
   try {
-    console.log("SM storageModel", storageModel)
-      const items = await storageModel.findAll();
-      if (!items || items.length === 0) {
-          return []; // Devuelve un array vacío en lugar de lanzar un error
-      }
-      return items;
+    let storages;
+    if (ENGINE_DB === 'nosql'){
+      storages = await storageModel.find({})
+    } else {
+      storages = await storageModel.findAll();
+    }
+
+    if (!storages || storages.length === 0) {
+      throw new Error ('No files found')
+    }
+    return storages;
   } catch (error) {
-      throw new Error("Database query failed");
+      throw error;
   }
 };
 
@@ -33,12 +39,18 @@ const uploadItemService = async(myFile) => {
 
 const getItemByIdService = async (id) => {
     try {
-      foundId = await storageModel.findOne({ _id: id });
-      if (!foundId) {
-        throw new Error(`ID ${id} not found`);
+      let foundId;
+      if (ENGINE_DB === 'nosql') {
+        foundId = await storageModel.findOne({ _id: id})
       } else {
-        return foundId;
+        foundId = await storageModel.findOne({ where: {id}})
       }
+
+      if (!foundId) {
+        throw new Error (`ID ${id} not found`);
+      }
+
+      return foundId;
     } catch (error) {
       throw error;
     }
@@ -46,14 +58,25 @@ const getItemByIdService = async (id) => {
 
   const deleteItemService = async (id) => {
     try {
-        foundId = await storageModel.findOne({ _id: id });
-        if (!foundId) {
-            throw new Error (`ID ${id} not found`);
+ 
+        let foundId;
+        if (ENGINE_DB === 'nosql'){
+          foundId = await storageModel.findOne({ _id: id})
+        } else {
+          foundId = await storageModel.findOne({ where: {id}})
         }
+        if (!foundId) {
+          throw new Error (`ID ${id} not found`);
+      }
         const { filename } = foundId;
         const filePath = `${__dirname}/../storage/${filename}`
         fs.unlinkSync(filePath)
-        return await storageModel.delete({ _id: id })
+        let deleteResult;
+        if(ENGINE_DB === 'nosql') {
+          deleteResult = await storageModel.delete({ _id: id})
+        } else {
+          deleteResult = await storageModel.destroy({where: {id}})
+        }
     } catch (error) {
         throw error;
     }

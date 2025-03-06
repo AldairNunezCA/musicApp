@@ -13,7 +13,6 @@ const getItems = async (req, res) => {
 const uploadItem = async (req, res) => {
   try {
     const myFile = req.file;
-    console.log(myFile);
     const result = await uploadItemService(myFile);
     res.status(201).json(result);
   } catch (error) {

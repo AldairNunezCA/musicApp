@@ -10,7 +10,7 @@ const getUsersService = async () => {
       users = await usersModel.findAll();
     }
 
-    if (!users || users.lenght === 0) {
+    if (!users || users.length === 0) {
       throw new Error("No users found");
     }
     return users;
@@ -57,4 +57,28 @@ const modifyUserService = async ( id, data ) => {
   }
 };
 
-module.exports = {getUsersService, modifyUserService}
+const deleteUserService = async (id) => {
+  try{
+    let foundId; 
+    if (ENGINE_DB === 'nosql'){
+      foundId = await usersModel.findOne({ _id: id})
+    } else {
+      foundId = await usersModel.findOne({ where: {id}})
+    }
+
+    if (!foundId){
+      throw new Error(`ID ${id} not found`);
+    }
+
+    let deleteResult;
+    if (ENGINE_DB === 'nosql') {
+      deleteResult = await usersModel.delete({ _id: id});
+    } else {
+      deleteResult = await usersModel.destroy({ where: {id}})
+    }
+  } catch (error) {
+    throw error;
+  }
+}
+
+module.exports = {getUsersService, modifyUserService,deleteUserService}

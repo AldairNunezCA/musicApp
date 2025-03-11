@@ -15,7 +15,6 @@ const UserScheme = new mongoose.Schema(
         },
         password:{
             type: String,
-            required: true,
             select: false
         },
         role: {
@@ -29,6 +28,7 @@ const UserScheme = new mongoose.Schema(
         versionKey: false
     }
 );
+
 
 UserScheme.plugin(MongooseDelete, {overrideMethods: "all"})
 module.exports = mongoose.model("users", UserScheme);

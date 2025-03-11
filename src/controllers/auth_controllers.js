@@ -22,4 +22,14 @@ const loginUser = async (req, res) => {
     }
 };
 
-module.exports = { registerUser, loginUser };
+const loginGoogle = async (req, res) => {
+    try{
+        const { token, user } = req.user;
+        res.status(200).send({ token, user });
+    } catch (error) {
+        res.status(401).send({ error: error.message });
+    }
+}
+
+
+module.exports = { registerUser, loginUser, loginGoogle };

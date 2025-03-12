@@ -1,5 +1,5 @@
 const { matchedData } = require("express-validator");
-const { registerUserService, loginUserService } = require("../services/auth_services");
+const { registerUserService, loginUserService, loginThirdPartyService } = require("../services/auth_services");
 
 
 const registerUser = async (req, res) => {
@@ -29,7 +29,30 @@ const loginGoogle = async (req, res) => {
     } catch (error) {
         res.status(401).send({ error: error.message });
     }
-}
+};
+
+const loginFacebook = async (req, res) => {
+    try{
+        res.redirect('/api/v1/auth/login/facebook/success');
+    } catch (error) {
+        res.status(401).send({ error: error.message });
+    }
+};
+
+const loginFacebookSuccess = async (req, res) => {
+    try{
+        const data = {
+            id: req.session.passport.user.id,
+        }
+
+        const result = await loginThirdPartyService(data)
+        console.log(result);
+        res.status(200).send(result);
+    }
+    catch (error) {
+        res.status(401).send({ error: error.message });
+    }
+};
 
 
-module.exports = { registerUser, loginUser, loginGoogle };
+module.exports = { registerUser, loginUser, loginGoogle, loginFacebook, loginFacebookSuccess };

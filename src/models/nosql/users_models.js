@@ -3,6 +3,10 @@ const MongooseDelete = require('mongoose-delete');
 
 const UserScheme = new mongoose.Schema(
     {
+        facebookId: {
+            type: String,
+            unique: true,
+        },
         name:{
             type: String
         },

@@ -7,6 +7,10 @@ const User = sequelize.define("users", {
         defaultValue: DataTypes.UUIDV4,
         primaryKey: true
     },
+    fbId: {
+        type: DataTypes.STRING,
+        unique: true
+    },
     name: {
         type: DataTypes.STRING,
         allowNull: false

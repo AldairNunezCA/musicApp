@@ -33,7 +33,7 @@ passport.use(
                     };
                     const user = await usersModel.create(newUser);
                     const token = await tokenSign(user);
-                    done(null,  {token, profile});
+                    done(null,  {token, user});
                 }
             } catch (err) {
                 done(err, null);
@@ -53,25 +53,22 @@ passport.use(
         async (accessToken, refreshToken, profile, done) => {
             try {
                 let existingUser;
-                console.log(profile)
                 if (ENGINE_DB === 'nosql') {
-                    existingUser = await usersModel.findOne({ email: profile.emails[0].value });
+                    existingUser = await usersModel.findOne({ fbId: profile.id });
                 } else {
                     existingUser = await usersModel.findOne({ where: { fbId: profile.id } });
                 }
                 if (existingUser) {
                     const token = await tokenSign(existingUser);
-                    console.log('token', token)
-                    return done(null, profile);
+                    return done(null, {token, user: existingUser});
                 } else {
                     const newUser ={
                         fbId: profile.id,
                         name: profile.displayName
                     };
-                    await usersModel.create(newUser);
-                    const token = await tokenSign(newUser);
-                    console.log('token', token)
-                    done(null, profile);
+                    const user =  await usersModel.create(newUser);
+                    const token = await tokenSign(user);
+                    done(null, {token, user});
                 }
             } catch (err) {
                 done(err, null);

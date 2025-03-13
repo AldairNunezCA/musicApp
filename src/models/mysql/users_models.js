@@ -7,6 +7,10 @@ const User = sequelize.define("users", {
         defaultValue: DataTypes.UUIDV4,
         primaryKey: true
     },
+    googleId: {
+        type: DataTypes.STRING,
+        unique: true
+    },
     fbId: {
         type: DataTypes.STRING,
         unique: true

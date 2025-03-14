@@ -1,3 +1,6 @@
+const {  GetObjectCommand } = require("@aws-sdk/client-s3");
+const {s3} = require('../config/s3')
+const { getSignedUrl } = require('@aws-sdk/s3-request-presigner')
 const { storageModel } = require("../models");
 const fs = require('fs')
 const publicUrl = process.env.PUBLIC_URL;
@@ -22,13 +25,13 @@ const getItemsService = async () => {
 };
 
 const uploadItemService = async(myFile) => {
-    if (!myFile || !myFile.filename) {
+    if (!myFile) {
         throw new Error('Invalid file');
     }
-    const { filename } = myFile;
+    const filename = myFile.key.split('/').pop(); 
     const fileData = {
         filename: filename,
-        url: `${publicUrl}${filename}`
+        url: myFile.location
     }
     try{
         return await storageModel.create(fileData);
@@ -45,7 +48,6 @@ const getItemByIdService = async (id) => {
       } else {
         foundId = await storageModel.findOne({ where: {id}})
       }
-
       if (!foundId) {
         throw new Error (`ID ${id} not found`);
       }
@@ -55,6 +57,31 @@ const getItemByIdService = async (id) => {
       throw error;
     }
   };
+
+  const getFileByUrl = async (id) => {
+    try{
+      let foundId;
+      if (ENGINE_DB === 'nosql') {
+        foundId = await storageModel.findOne({ _id: id})
+      }
+      else {
+        foundId = await storageModel.findOne({ where: {id}})
+      }
+      if (!foundId) {
+        throw new Error (`ID ${id} not found`);
+      }
+      const { filename } = foundId;
+      const command = new GetObjectCommand({
+        Bucket: process.env.AWS_BUCKET_NAME,
+        Key: `tracks/${filename}`
+      });
+      const signedUrl = await getSignedUrl(s3, command, { expiresIn: 3600 });
+      console.log(signedUrl);
+      return signedUrl;
+    } catch (error) {
+      throw error;
+    }
+  }
 
   const deleteItemService = async (id) => {
     try {
@@ -82,4 +109,4 @@ const getItemByIdService = async (id) => {
     }
   }
 
-module.exports = { uploadItemService, getItemsService, getItemByIdService, deleteItemService }
+module.exports = { uploadItemService, getItemsService, getFileByUrl, getItemByIdService, deleteItemService }

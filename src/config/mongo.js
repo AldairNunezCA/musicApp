@@ -4,9 +4,9 @@ const dbConnectMongo =  async () => {
     try {
         await mongoose.connect(process.env.DB_URI);
         await mongoose.connection.dropDatabase();
-        console.log('*****CONNECTION TO MONGO SUCCESFULL*****')
+        console.log('✅ MongoDB connection successful')
     } catch (error) {
-        console.log('***** CONNECTION ERROR *****', error);
+        console.log('❌ MongoDB connection error', error);
     }
 }
 

@@ -1,4 +1,4 @@
-const { uploadItemService, getItemsService, getItemByIdService, deleteItemService } = require("../services/storage_services");
+const { uploadItemService, getItemsService, getItemByIdService, deleteItemService, getFileByUrl } = require("../services/storage_services");
 
 const getItems = async (req, res) => {
   try {
@@ -23,7 +23,7 @@ const uploadItem = async (req, res) => {
 const getItem = async (req, res) => {
   try {
     const { _id } = req.params;
-    const result = await getItemByIdService(_id);
+    const result = await getFileByUrl(_id);
     res.status(200).json(result);
   } catch (error) {
     res.status(500).send({ error: error.message });
